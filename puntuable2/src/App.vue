@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { TresCanvas } from '@tresjs/core'
 
-import TheExperience from './components/TheExperience.vue'
+import mundo from './components/mundo.vue'
+import barraLateral from './components/barralateral.vue'
 </script>
 
 <template>
   <TresCanvas
-    clear-color="#82DBC5"
+    clear-color="#2a2b2e"
     window-size
   >
-    <TheExperience />
+    <mundo />
+    <barra-lateral />
   </TresCanvas>
 </template>
