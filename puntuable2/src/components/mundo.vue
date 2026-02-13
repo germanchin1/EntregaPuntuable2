@@ -8,10 +8,12 @@ import { DragControls } from 'three-stdlib'
 const { scene, camera, renderer, controls } = useTres()
 
 const draggable: any[] = []
-let dragControls: DragControls | null = null
+let dragControls: DragControls;
+let ultimoObjetoArrastrado: THREE.Object3D;
 
 onMounted(() => {
   const activeCamera = camera.value
+  //NI IDEA DE QUE HACE ESTO PERO ES PARA PODER ARRASTRAR LOS CUBOS
   const domElement = 'domElement' in renderer ? renderer.domElement : null
   if (!activeCamera || !domElement) {
     return
@@ -20,13 +22,13 @@ const light = new THREE.AmbientLight(0xffffff, 1); // Luz blanca, intensidad 1
 scene.value.add(light)
 
 
-  const geometry = new THREE.BoxGeometry(1, 1, 1)
-  const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 })
-  const material2 = new THREE.MeshStandardMaterial({ color: 0xacacac, side: THREE.BackSide })
+  const geometry = new THREE.BoxGeometry(1, 1, 3)
+  const material = new THREE.MeshStandardMaterial({ color: 0xfcba03 })
+  const material2 = new THREE.MeshStandardMaterial({ color: 0xacacac, side: THREE.BackSide /*ver solo por dentro */ })
   
-  
+  //CREAR LA HABITACIÓN
   const habitacion = new THREE.Mesh(
-    new THREE.BoxGeometry(10, 5, 10), material2)
+  new THREE.BoxGeometry(7, 5, 10), material2)
   habitacion.position.y = 2.5
   scene.value.add(habitacion)
 
@@ -43,17 +45,30 @@ scene.value.add(light)
   const cube3 = new THREE.Mesh(geometry, material)
   cube3.position.set(-2, 0.5, 0)
   draggable.push(cube3)
+  cube3.name
   scene.value.add(cube3)
 
-  dragControls = new DragControls(draggable, activeCamera, domElement)
-  scene.value.add(habitacion)
 
+  //NI IDEA DE QUE HACE ESTO PERO ES PARA PODER ARRASTRAR LOS CUBOS
+  dragControls = new DragControls(draggable, activeCamera, domElement)
+
+
+  //EMPEZAR A ESCUCHAR LOS EVENTOS DE DRAG
   dragControls.addEventListener('dragstart', (event) => {
-    // event.object es el mesh que se arrastra
+    ultimoObjetoArrastrado = event.object
     console.log('dragstart', event.object)
+    console.log("el ultimo objeto arrastrado es: ", ultimoObjetoArrastrado)
     if (controls.value) {
       controls.value.enabled = false
     }
+
+    //ROTACIÓN
+    window.addEventListener('keydown', (r) => {
+      if (r.key === 'r' && ultimoObjetoArrastrado) {
+        ultimoObjetoArrastrado.rotation.y += Math.PI / 8
+        console.log(ultimoObjetoArrastrado.rotation.y)
+      }
+    })
   })
 
   dragControls.addEventListener('drag', () => {
