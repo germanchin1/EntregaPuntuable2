@@ -1,18 +1,37 @@
 <template>
     <div class="barra-lateral">
-        <nav>
-            <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#servicios">Servicios</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
-        </nav>
+        <h1>MUEBLES DISPONIBLES</h1>
+            <img 
+                src="../assets/silla.png" 
+                alt="Silla" 
+                width="100" 
+                draggable="true"
+                @dragstart="startDrag($event, 'silla')"
+                class="draggable-item">
+            <img 
+                src="../assets/mesa.png" 
+                alt="Mesa" 
+                width="100" 
+                draggable="true"
+                @dragstart="startDrag($event, 'mesa')"
+                class="draggable-item">
+            <img 
+                src="../assets/cama.png" 
+                alt="Cama" 
+                width="100" 
+                draggable="true"
+                @dragstart="startDrag($event, 'cama')"
+                class="draggable-item">
     </div>
 </template>
 
-<script>
-export default {
-    name: 'BarraLateral'
+<script setup lang="ts">
+const startDrag = (event: DragEvent, tipo: string) => {
+  if (event.dataTransfer) {
+    event.dataTransfer.effectAllowed = 'copy'
+    event.dataTransfer.setData('tipo-mueble', tipo)
+    console.log('Arrastrando:', tipo)
+  }
 }
 </script>
 
@@ -23,33 +42,31 @@ export default {
     top: 0;
     width: 250px;
     height: 100vh;
-    background-color: #333;
+    background-color: #fff;
     padding: 20px;
     z-index: 1000;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.barra-lateral h1 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-family: 'Courier New', Courier, monospace;
 }
 
-nav ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+.draggable-item {
+    cursor: grab;
+    margin: 10px 0;
+    transition: transform 0.2s;
 }
 
-nav ul li {
-    margin: 15px 0;
+.draggable-item:hover {
+    transform: scale(1.05);
 }
 
-nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-    display: block;
-    padding: 10px;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: #555;
+.draggable-item:active {
+    cursor: grabbing;
 }
 </style>
